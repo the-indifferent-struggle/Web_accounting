@@ -3,9 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel = "stylesheet" href = "/static/plugins/bootstrap-5.3.8/css/bootstrap.css"/>
+    <style>
+        .header-right {
+            padding-right: 100px;
+        }
+
+        .body {
+            height: 1200px;
+            background-image: url("/static/img/background.png");
+        }
+
+        .body-container {
+            height: 500px;
+            width: 1226px;
+            margin: 0 auto;
+            padding-top: 100px;
+        }
+
+        .register {
+            border: 1px solid black;
+            background-color: white;
+            width: 300px;
+            height: 320px;
+            margin: 70px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 5px 5px 5px #aaa;
+        }
+
+        .r-header {
+            text-align: center;
+            padding: 5px;
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="/static/plugins/bootstrap-5.3.8/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/brands.css">
+    <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/solid.css">
 </head>
 <body>
-<
+<div class="header">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/user/login">
+                <i class="fa-regular fa-receipt"></i>
+                <span>小白个人记账本</span>
+            </a>
+            <a class="navbar-brand" href="/user/register">
+                <i class="fa-regular fa-receipt"></i>
+                <span>小白个人记账本</span>
+            </a>
+            <div class="header-right">
+                Great men are not born great,they grow great
+                ——— 伟大的人不是生下来就伟大的，而是在成长过程中显示其伟大的
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="body">
+    <div class="body-container">
+        <div class="register">
+            <h3 class="r-header">用户登录</h3>
+            <form>
+                <div class="mb-3">
+                    <label for="username" class="form-label">用户名或手机号</label>
+                    <input type="text" class="form-control" id="username" placeholder="请输入用户名或手机号">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密码</label>
+                    <input type="password" class="form-control" id="password" aria-describedby="passwordHelpBlock">
+                    <div id="passwordHelpBlock" class="form-text">
+                        密码需包含6-20位字母/数字/符号
+                    </div>
+                </div>
+                <div>
+                    <input type="submit" value="登录" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script src="/static/plugins/bootstrap-5.3.8/js/bootstrap.min.js"></script>
 </body>
 </html>
