@@ -9,8 +9,12 @@
         }
 
         .body {
-            height: 1200px;
+            min-height: 100vh; /* 使用视口高度（用户在网页中当前可见的区域）100vh就是百分百视口高度 */
             background-image: url("/static/img/background.png");
+            background-size: cover; /* 背景图覆盖整个区域 */
+            background-position: center; /* 背景图片居中 */
+            background-repeat: no-repeat; /* 让背景不重复 */
+            background-attachment: fixed; /* 让背景固定在页面上 */
         }
 
         .body-container {
@@ -24,7 +28,7 @@
             border: 1px solid black;
             background-color: white;
             width: 300px;
-            height: 320px;
+            height: 330px;
             margin: 70px auto;
             padding: 20px;
             border-radius: 5px;
@@ -34,6 +38,10 @@
         .r-header {
             text-align: center;
             padding: 5px;
+        }
+
+        .body-button {
+            display: inline;
         }
 
     </style>
@@ -51,10 +59,6 @@
                 <i class="fa-regular fa-receipt"></i>
                 <span>小白个人记账本</span>
             </a>
-            <a class="navbar-brand" href="/user/register">
-                <i class="fa-regular fa-receipt"></i>
-                <span>小白个人记账本</span>
-            </a>
             <div class="header-right">
                 Great men are not born great,they grow great
                 ——— 伟大的人不是生下来就伟大的，而是在成长过程中显示其伟大的
@@ -66,10 +70,10 @@
     <div class="body-container">
         <div class="register">
             <h3 class="r-header">用户登录</h3>
-            <form>
+            <form class = "body-button" method = "POST" action = "/user/account">
                 <div class="mb-3">
-                    <label for="username" class="form-label">用户名或手机号</label>
-                    <input type="text" class="form-control" id="username" placeholder="请输入用户名或手机号">
+                    <label for="mobile" class="form-label">手机号</label>
+                    <input type="text" class="form-control" id="mobile" placeholder="请输入手机号">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">密码</label>
@@ -78,12 +82,12 @@
                         密码需包含6-20位字母/数字/符号
                     </div>
                 </div>
-                <div>
-                    <input type="submit" value="登录" class="btn btn-primary"/>
-                </div>
+                <input type="submit" value="登录" class="btn btn-primary"/>
+            </form>
+            <form class = "body-button" method = "GET" action = "/user/register">
+                 <input type = "submit" value = "注册" class = "btn btn-light">
             </form>
         </div>
-
     </div>
 </div>
 
