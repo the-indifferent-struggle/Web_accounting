@@ -17,9 +17,7 @@ def login():
         conn = pymysql.connect(**Wa_config)
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
 
-        sql = """select *
-                 from admin
-                 where mobile = %s"""
+        sql = """select * from admin where mobile = %s"""
         data_list = cursor.fetchall()
 
 
