@@ -45,21 +45,40 @@
     <div class="b-header">
         <div class="container">
             <h5>小白个人记账本</h5>
-            <form method = "POST" action = "/user/register" target = "_blank">
+            <!-- 渲染 Flash 消息（关键！） --> <!-- 后续补学flash（） 这段由ai写的 -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div style="margin: 15px 0;">
+                {% for category, message in messages %}
+                <div class="alert
+          {% if category == 'error' %}alert-danger
+          {% elif category == 'success' %}alert-success
+          {% else %}alert-info{% endif %}"
+                     style="padding: 10px; border-radius: 4px; margin-bottom: 10px;
+                 background-color: {% if category == 'error' %}#f8d7da{% else %}#d4edda{% endif %};
+                 color: {% if category == 'error' %}#721c24{% else %}#155724{% endif %};">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <form method="POST" action="/user/register">
                 <div class="mb-3">
                     <label for="username" class="form-label">用户名</label>
-                    <input type="text" class="form-control" id="username" name = "username" placeholder="请输入用户名">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">密码</label>
-                    <input type="password" class="form-control" id="password" name = "password" aria-describedby="passwordHelpBlock">
+                    <input type="password" class="form-control" id="password" name="password"
+                           aria-describedby="passwordHelpBlock">
                     <div id="passwordHelpBlock" class="form-text">
                         密码需包含6-20位字母/数字/符号
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="mobile" class="form-label">手机号</label>
-                    <input type="text" class="form-control" id="mobile" name = "mobile" placeholder="请输入手机号码">
+                    <input type="text" class="form-control" id="mobile" name="mobile" placeholder="请输入手机号码">
                 </div>
                 <div>
                     <input type="submit" value="提交" class="btn btn-light"/>

@@ -14,11 +14,42 @@ def login():
         mobile = request.form.get("mobile")
         password = request.form.get("password")
 
-        conn = pymysql.connect(**Wa_config)
-        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+        if not all([mobile,password]):
+            flash("请输入完整的用户名和密码","error")
+            return render_template("login.html")
 
-        sql = """select * from admin where mobile = %s"""
-        data_list = cursor.fetchall()
+        try:
+            conn = pymysql.connect(**Wa_config)
+            cursor = conn.cursor(cursor = pymysql.cursors.DictCursor)
+
+            sql = """select id from admin where mobile = %s"""
+            values = [mobile,]
+            cursor.execute(sql,values)
+            existing = cursor.fetchone()
+
+            if existing:
+                sql = """select password from admin where mobile = %s"""
+                values = [mobile, ]
+                cursor.execute(sql, values)
+                data_dict = cursor.fetchone()
+                if data_dict["password"] == password:
+                    flash("登录成功","success")
+                    return redirect(url_for("account"))
+                else:
+                    flash("密码错误","error")
+                    return render_template("login.html")
+            else:
+                print("该手机号码不存在")
+                flash("手机号码不存在","error")
+                return render_template("login.html")
+        except Exception as e:
+            print(f"登录失败：{e}")
+            flash("登录失败","error")
+            return render_template("login.html")
+        finally:
+            if conn:
+                conn.close()
+
 
 
 @app.route("/user/register", methods=["GET", "POST"])
@@ -31,7 +62,7 @@ def register():
         mobile = request.form.get("mobile")
 
         if not all([username, password, mobile]):
-            flash("请输入用户名、密码、手机号三个信息", "error")
+            flash("请输入完整的用户名、密码、手机号", "error")
             return render_template('register.html')
 
         conn = None
@@ -70,9 +101,6 @@ def register():
         finally:
             if conn:
                 conn.close()
-
-
-
 
 
 @app.route("/user/account", methods=["GET", "POST"])
