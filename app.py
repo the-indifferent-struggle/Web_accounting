@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for,flash
-from config import Wa_config,Secret_key
+from flask import Flask, render_template, request, redirect, url_for, flash
+from config import Wa_config, Secret_key
 import pymysql
 
 app = Flask(__name__)
@@ -14,42 +14,45 @@ def login():
         mobile = request.form.get("mobile")
         password = request.form.get("password")
 
-        if not all([mobile,password]):
-            flash("请输入完整的用户名和密码","error")
+        if not all([mobile, password]):
+            flash("请输入完整的用户名和密码", "error")
             return render_template("login.html")
 
         try:
             conn = pymysql.connect(**Wa_config)
-            cursor = conn.cursor(cursor = pymysql.cursors.DictCursor)
+            cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
 
-            sql = """select id from admin where mobile = %s"""
-            values = [mobile,]
-            cursor.execute(sql,values)
+            sql = """select id
+                     from admin
+                     where mobile = %s"""
+            values = [mobile, ]
+            cursor.execute(sql, values)
             existing = cursor.fetchone()
 
             if existing:
-                sql = """select password from admin where mobile = %s"""
+                sql = """select password
+                         from admin
+                         where mobile = %s"""
                 values = [mobile, ]
                 cursor.execute(sql, values)
                 data_dict = cursor.fetchone()
                 if data_dict["password"] == password:
-                    flash("登录成功","success")
+                    flash("登录成功", "success")
                     return redirect(url_for("account"))
                 else:
-                    flash("密码错误","error")
+                    flash("密码错误", "error")
                     return render_template("login.html")
             else:
                 print("该手机号码不存在")
-                flash("手机号码不存在","error")
+                flash("手机号码不存在", "error")
                 return render_template("login.html")
         except Exception as e:
             print(f"登录失败：{e}")
-            flash("登录失败","error")
+            flash("登录失败", "error")
             return render_template("login.html")
         finally:
             if conn:
                 conn.close()
-
 
 
 @app.route("/user/register", methods=["GET", "POST"])
@@ -72,31 +75,38 @@ def register():
             conn = pymysql.connect(**Wa_config)
             cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
 
-            sql = """select id from admin where username = %s or mobile = %s"""
-            values = [username,mobile]
-            cursor.execute(sql,values)
-            existing = cursor.fetchone() #返回一个元素是id的元组
+            sql = """select id
+                     from admin
+                     where username = %s
+                        or mobile = %s"""
+            values = [username, mobile]
+            cursor.execute(sql, values)
+            existing = cursor.fetchone()  # 返回一个元素是id的元组
 
-            if existing: #非空元组就会进入检查
-                sql1 = """select username,mobile from admin where username = %s or mobile = %s"""
-                values1 = [username,mobile]
-                cursor.execute(sql1,values1)
+            if existing:  # 非空元组就会进入检查
+                sql1 = """select username, mobile
+                          from admin
+                          where username = %s
+                             or mobile = %s"""
+                values1 = [username, mobile]
+                cursor.execute(sql1, values1)
                 user = cursor.fetchone()
                 if user["username"] == username:
-                    flash("您的用户名已存在","error")
+                    flash("您的用户名已存在", "error")
                 elif user["mobile"] == mobile:
-                    flash("您的手机号码已存在","error")
+                    flash("您的手机号码已存在", "error")
                 return render_template("register.html")
             else:
-                sql2 = """insert into admin(username,password,mobile) values(%s,%s,%s)"""
-                values2 = [username,password,mobile]
-                cursor.execute(sql2,values2)
+                sql2 = """insert into admin(username, password, mobile)
+                          values (%s, %s, %s)"""
+                values2 = [username, password, mobile]
+                cursor.execute(sql2, values2)
                 conn.commit()
-                flash("注册成功","success")
+                flash("注册成功", "success")
                 return redirect(url_for('login'))  # 'login' 是 login 函数的名称
         except Exception as e:
             print(f"注册失败：{e}")
-            flash("注册失败","error")
+            flash("注册失败", "error")
             return render_template("register.html")
         finally:
             if conn:
@@ -105,7 +115,10 @@ def register():
 
 @app.route("/user/account", methods=["GET", "POST"])
 def account():
-    return render_template("account.html")
+    if request.method == "GET":
+        return render_template("account.html")
+
+
 
 
 if __name__ == "__main__":

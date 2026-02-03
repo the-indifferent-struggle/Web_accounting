@@ -3,6 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .background {
+            min-height: 100vh; /* 使用视口高度（用户在网页中当前可见的区域）100vh就是百分百视口高度 */
+            background-image: url("/static/img/acct_backg.png");
+            background-size: cover; /* 背景图覆盖整个区域 */
+            background-position: center; /* 背景图片居中 */
+            background-repeat: no-repeat; /* 让背景不重复 */
+            background-attachment: fixed; /* 让背景固定在页面上 */
+        }
+
+        .bton {
+            width: 700px;
+            margin: 50px 100px 0;
+        }
+
+        .btton button {
+            margin-left: 10px;
+        }
+    </style>
 
     <link rel="stylesheet" href="/static/plugins/bootstrap-5.3.8/css/bootstrap.css"/>
     <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/fontawesome.css">
@@ -10,51 +29,97 @@
     <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/solid.css">
 </head>
 <body>
-<div class="header">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fa-regular fa-receipt"></i>
-                <span>小白个人记账本</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+<div class="background">
+    <div class="header">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fa-regular fa-receipt"></i>
+                    <span>小白个人记账本</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
+    <div class="bton">
+        <form class="btton" method="POST" action="/user/account">
+            <button type="button" class="btn btn-primary" name="insert">插入</button>
+            <button type="button" class="btn btn-primary" name="delete">删除</button>
+            <button type="button" class="btn btn-primary" name="modify">修改</button>
+            <button type="button" class="btn btn-primary" name="query">查询</button>
+        </form>
+    </div>
+    <div class="tables">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">小白个人记账本</th>
+                <th scope="col">ID</th>
+                <th scope="col">amount</th>
+                <th scope="col">type</th>
+                <th scope="col">category</th>
+                <th scope="col">date</th>
+                <th scope="col">description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>John</td>
+                <td>Doe</td>
+                <td>@social</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 </div>
 
 <script src="/static/plugins/bootstrap-5.3.8/js/bootstrap.min.js"></script>
