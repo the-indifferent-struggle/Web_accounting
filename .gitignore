@@ -2,5 +2,3 @@
 *.pyc
 config.py
 .idea/
-app1.py
-model.py
