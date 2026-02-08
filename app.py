@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from config import Wa_config, Secret_key
 import pymysql
+import models
 
 app = Flask(__name__)
 app.secret_key = Secret_key
@@ -117,9 +118,22 @@ def register():
 def account():
     if request.method == "GET":
         return render_template("account.html")
-
-
-
+    else:
+        try:
+            conn = pymysql.connect(**Wa_config)
+            cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+            sql = """select * \
+                     from admin"""
+            cursor.execute(sql)
+            datas = cursor.fetchall()
+            return render_template("account.html", data_list=datas)
+        except Exception as e:
+            print(f"查询数据失败：{e}")
+            flash("查询数据失败","error")
+            return render_template("account.html",data_list = [])
+        finally:
+            if conn:
+                conn.close()
 
 if __name__ == "__main__":
     app.run()
