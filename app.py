@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash,session
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from config import Wa_config, Secret_key
 from datetime import date
 import pymysql
@@ -12,49 +12,39 @@ app.secret_key = Secret_key
 def login():
     if request.method == "GET":
         return render_template("login.html")
-    else:
-        mobile = request.form.get("mobile")
-        password = request.form.get("password")
 
-        if not all([mobile, password]):
-            flash("请输入完整的用户名和密码", "error")
-            return render_template("login.html")
+    mobile = request.form.get("mobile")
+    password = request.form.get("password")
 
-        try:
-            conn = pymysql.connect(**Wa_config)
-            cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    if not all([mobile, password]):
+        flash("请输入完整的手机号和密码", "error")
+        return render_template("login.html")
 
-            sql = """select id
-                     from admin
-                     where mobile = %s"""
-            values = [mobile, ]
-            cursor.execute(sql, values)
-            existing = cursor.fetchone()
+    conn = None  # 初始化 conn，避免 NameError
+    try:
+        conn = pymysql.connect(**Wa_config)
+        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
 
-            if existing:
-                sql = """select password
-                         from admin
-                         where mobile = %s"""
-                values = [mobile, ]
-                cursor.execute(sql, values)
-                data_dict = cursor.fetchone()
-                if data_dict["password"] == password:
-                    flash("登录成功", "success")
-                    return redirect(url_for("account"))
-                else:
-                    flash("密码错误", "error")
-                    return render_template("login.html")
+        cursor.execute("SELECT id, password FROM admin WHERE mobile = %s", (mobile,))
+        user = cursor.fetchone()
+
+        if user:
+            if user["password"] == password:  # 注意：明文对比
+                session['user_id'] = user['id']
+                flash("登录成功", "success")
+                return redirect(url_for("account"))
             else:
-                print("该手机号码不存在")
-                flash("手机号码不存在", "error")
-                return render_template("login.html")
-        except Exception as e:
-            print(f"登录失败：{e}")
-            flash("登录失败", "error")
-            return render_template("login.html")
-        finally:
-            if conn:
-                conn.close()
+                flash("密码错误", "error")
+        else:
+            flash("手机号码不存在", "error")
+    except Exception as e:
+        print(f"登录失败：{e}")
+        flash("系统错误，请稍后再试", "error")
+    finally:
+        if conn:
+            conn.close()
+
+    return render_template("login.html")
 
 
 @app.route("/user/register", methods=["GET", "POST"])
@@ -115,6 +105,7 @@ def register():
                 conn.close()
 
 
+
 @app.route("/user/account", methods=["GET", "POST"])
 def account():
     if "user_id" not in session:
@@ -127,7 +118,7 @@ def account():
         search_date = request.args.get("date")
 
         if search_date:
-            records = models.get_records_by_date(user_id,search_date)
+            records = models.get_records_by_date(user_id, search_date)
         else:
             records = models.get_all_records(user_id)
 
@@ -137,7 +128,7 @@ def account():
             else:
                 r["type"] = "支出"
 
-        return render_template("account.html",data_list = records,today = today_str,date = search_date)
+        return render_template("account.html", data_list=records, today=today_str, date=search_date)
     else:
         action = request.form.get("action")
         if action == "add":
@@ -147,21 +138,21 @@ def account():
             date_val = request.form.get("date")
             description = request.form.get("description")
 
-            if not all([amount,type_chinese,category,date_val]):
-                flash("请填写完整信息","error")
+            if not all([amount, type_chinese, category, date_val]):
+                flash("请填写完整信息", "error")
                 return redirect(url_for("account"))
 
             try:
                 models.add_record(user_id, amount, type_chinese, category, date_val, description)
-                flash("增加成功","success")
+                flash("增加成功", "success")
             except Exception as e:
                 print(f"新增失败:{e}")
-                flash("增加失败","error")
+                flash("增加失败", "error")
             return redirect(url_for("account"))
 
-        elif action=="update":
+        elif action == "update":
             record_id = request.form.get("record_id")
-            amount =  request.form.get("amount")
+            amount = request.form.get("amount")
             type_chinese = request.form.get("type")
             category = request.form.get("category")
             date_val = request.form.get("date")
@@ -172,7 +163,8 @@ def account():
                 return redirect(url_for('account'))
 
             try:
-                success = models.update_record(record_id, user_id, amount, type_chinese, category, date_val,description)
+                success = models.update_record(record_id, user_id, amount, type_chinese, category, date_val,
+                                               description)
                 if success:
                     flash("修改成功！", "success")
                 else:
@@ -200,7 +192,7 @@ def account():
             return redirect(url_for('account'))
 
         else:
-            flash("未知操作","error")
+            flash("未知操作", "error")
             return redirect(url_for('account'))
 
 

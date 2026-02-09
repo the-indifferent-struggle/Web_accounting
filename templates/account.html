@@ -31,7 +31,9 @@
     </style>
 
     <link rel="stylesheet" href="/static/plugins/bootstrap-5.3.8/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/all.css">
+    <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/brands.css">
+    <link rel="stylesheet" href="/static/plugins/fontawesome-free-6.4.0-web/css/solid.css">
 </head>
 <body>
 <div class="background">
@@ -50,27 +52,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="#">主业</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                            <a class="nav-link" href="#">相关</a>
                         </li>
                     </ul>
                     <form class="d-flex" role="search">
@@ -238,17 +223,21 @@
 
 <script src="/static/plugins/bootstrap-5.3.8/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
-    // 修复Jinja2变量渲染和大小写问题
-    var datalist = {{ data_list | tojson }};
+    // 将数据列表挂到 window 上，或用 Map 存储 （不清楚，后续要补）
+    const recordsMap = new Map();
+    const datalist = {{ data_list | tojson }};
 
-    var tbody = document.getElementById("body");
-    tbody.innerHTML = ""; // 修正为innerHTML
+    // 构建 id -> record 的映射 （不清楚，后续要补）
+    datalist.forEach(record => {
+        recordsMap.set(record.id, record);
+    });
 
-    for (var i = 0; i < datalist.length; i++) {
-        var record = datalist[i];
-        var tr = document.createElement("tr");
+    const tbody = document.getElementById("body");
+    tbody.innerHTML = "";
 
-        // 修复图标类名（使用Font Awesome 6标准）
+    for (let i = 0; i < datalist.length; i++) {
+        const record = datalist[i];
+        const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${record.id}</td>
             <td>${record.amount}</td>
@@ -258,35 +247,38 @@
             <td>${record.description || ''}</td>
             <td>
                 <button type="button" class="btn btn-sm btn-outline-primary me-1"
-                        onclick="openEditModal(${JSON.stringify(record)})">
-                    <i class="fas fa-pen-to-square"></i> <!-- FA6编辑图标 -->
+                        onclick="openEditModal(${record.id})"> <!-- 只传 id -->
+                    <i class="fas fa-pen-to-square"></i>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger"
                         onclick="openDeleteModal(${record.id})">
-                    <i class="fas fa-trash-can"></i> <!-- FA6删除图标 -->
+                    <i class="fas fa-trash-can"></i>
                 </button>
             </td>
         `;
         tbody.appendChild(tr);
     }
 
-    // 修复删除模态框函数（使用用户定义的ID）
     function openDeleteModal(recordId) {
         document.getElementById('del_RecordId').value = recordId;
-        var deleteModal = new bootstrap.Modal(document.getElementById('del_Modal'));
+        const deleteModal = new bootstrap.Modal(document.getElementById('del_Modal'));
         deleteModal.show();
     }
 
-    // 修复编辑模态框函数（使用用户定义的带下划线ID）
-    function openEditModal(record) {
+    function openEditModal(recordId) {
+        const record = recordsMap.get(recordId);
+        if (!record) {
+            console.error("Record not found:", recordId);
+            return;
+        }
         document.getElementById('edit_RecordId').value = record.id;
         document.getElementById('edit_Amount').value = record.amount;
-        document.getElementById('edit_Type').value = record.type;
+        document.getElementById('edit_Type').value = record.type; // 中文，如"收入"
         document.getElementById('edit_Category').value = record.category;
         document.getElementById('edit_Date').value = record.date;
         document.getElementById('edit_Description').value = record.description || '';
 
-        var editModal = new bootstrap.Modal(document.getElementById('edit_Modal'));
+        const editModal = new bootstrap.Modal(document.getElementById('edit_Modal'));
         editModal.show();
     }
 </script>
